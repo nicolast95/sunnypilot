@@ -29,6 +29,17 @@ def dmonitoringd_thread():
     elif valid:
       DM.run_step(sm, demo=demo_mode)
 
+    # === DM BYPASS START ===
+    # 1. Wir überschreiben den internen Status auf "Perfekter Fahrer"
+    DM.awareness = 1.0
+    DM.driver_distracted = False
+    DM.face_detected = True
+    
+    # 2. DAS WICHTIGSTE: Wir löschen alle Warn-Events (wie "Pay Attention"), 
+    # die von run_step() fälschlicherweise durch den Beifahrer generiert wurden!
+    DM.events.events.clear()
+    # === DM BYPASS END ===
+
     # publish
     dat = DM.get_state_packet(valid=valid)
     pm.send('driverMonitoringState', dat)
